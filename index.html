@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080c14">
+<meta name="apple-mobile-web-app-title" content="AirSide">
+<title>AirSide — Base Madrid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<style>
+/* ══════════════════════════════════════════
+   AIRSIDE — DESIGN SYSTEM
+   Aesthetic: Aviation instrument panel
+   Dark, precise, authoritative
+══════════════════════════════════════════ */
+:root {
+  --ink:    #080c14;
+  --ink2:   #0d1220;
+  --ink3:   #131b2e;
+  --panel:  #0f1828;
+  --panel2: #162035;
+  --rim:    #1e2d4a;
+  --rim2:   #253555;
+  --sky:    #2d7dd2;
+  --sky2:   #5ba4f5;
+  --sky3:   #8bc4ff;
+  --sky-d:  #0d2a52;
+  --gold:   #e8a020;
+  --gold2:  #f5c842;
+  --gold-d: #3a2800;
+  --jade:   #00b894;
+  --jade-d: #003d30;
+  --red:    #e84040;
+  --red-d:  #3a0a0a;
+  --fog:    #c8d8f0;
+  --mist:   #7890b0;
+  --ghost:  #3a4d6a;
+  --mono:   'JetBrains Mono', monospace;
+  --head:   'Syne', sans-serif;
+  --r:      8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: var(--mono);
+  background: var(--ink);
+  color: var(--fog);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── BACKGROUND TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(45,125,210,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 80%, rgba(0,184,148,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+#app-root { position: relative; z-index: 1; min-height: 100dvh; display: flex; flex-direction: column; }
+
+/* ══ AUTH SCREENS ══ */
+#auth-screen {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--ink);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+
+.auth-logo {
+  font-family: var(--head);
+  font-size: 42px; font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--fog);
+  margin-bottom: 4px;
+}
+.auth-logo span { color: var(--sky2); }
+.auth-tagline {
+  font-family: var(--mono);
+  font-size: 11px; letter-spacing: 4px;
+  color: var(--ghost); text-transform: uppercase;
+  margin-bottom: 48px;
+}
+
+.auth-card {
+  width: 100%; max-width: 360px;
+  background: var(--panel);
+  border: 1px solid var(--rim);
+  border-radius: 16px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.auth-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sky), transparent);
+  opacity: 0.6;
+}
+
+.auth-tabs {
+  display: flex; gap: 4px; margin-bottom: 24px;
+  background: var(--ink3); border-radius: 8px; padding: 4px;
+}
+.auth-tab {
+  flex: 1; padding: 8px; border: none; background: none;
+  color: var(--ghost); font-family: var(--mono); font-size: 12px;
+  border-radius: 6px; cursor: pointer; transition: all .2s;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.auth-tab.active {
+  background: var(--panel2); color: var(--sky2);
+}
+
+.field-group { margin-bottom: 14px; }
+.field-label {
+  display: block; font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--ghost);
+  margin-bottom: 6px;
+}
+.field-input {
+  width: 100%; padding: 10px 14px;
+  background: var(--ink3); border: 1px solid var(--rim);
+  border-radius: var(--r); color: var(--fog);
+  font-family: var(--mono); font-size: 13px;
+  outline: none; transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.field-input:focus { border-color: var(--sky); }
+select.field-input { cursor: pointer; }
+
+.btn-primary {
+  width: 100%; padding: 12px;
+  background: var(--sky); color: white;
+  border: none; border-radius: var(--r);
+  font-family: var(--head); font-size: 14px; font-weight: 700;
+  letter-spacing: 1px; cursor: pointer;
+  transition: background .2s, transform .1s;
+  text-transform: uppercase;
+}
+.btn-primary:active { transform: scale(.98); background: #1d6bc0; }
+
+.auth-msg {
+  margin-top: 12px; text-align: center;
+  font-size: 11px; font-family: var(--mono);
+  min-height: 16px;
+}
+.auth-msg.err { color: var(--red); }
+.auth-msg.ok  { color: var(--jade); }
+
+/* ══ WELCOME ══ */
+#welcome-screen {
+  position: fixed; inset: 0; z-index: 199;
+  background: var(--ink);
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 32px; text-align: center;
+}
+.welcome-epaulettes { margin-bottom: 28px; }
+.welcome-name {
+  font-family: var(--head); font-size: 28px; font-weight: 700;
+  color: var(--fog); margin-bottom: 4px;
+}
+.welcome-role {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 3px;
+  color: var(--sky2); text-transform: uppercase; margin-bottom: 36px;
+}
+.btn-continue {
+  padding: 14px 40px;
+  background: linear-gradient(135deg, var(--sky), #1d6bc0);
+  color: white; border: none; border-radius: 10px;
+  font-family: var(--head); font-size: 14px; font-weight: 700;
+  letter-spacing: 2px; cursor: pointer; text-transform: uppercase;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 20px rgba(45,125,210,0.3);
+}
+.btn-continue:active { transform: scale(.97); }
+
+/* ══ MAIN APP ══ */
+#main-app { display: none; flex-direction: column; min-height: 100dvh; }
+
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,12,20,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rim);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.header-logo {
+  font-family: var(--head); font-size: 20px; font-weight: 800;
+  letter-spacing: -0.5px; color: var(--fog);
+}
+.header-logo span { color: var(--sky2); }
+.header-base {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  color: var(--ghost); background: var(--ink3);
+  padding: 3px 8px; border-radius: 4px; border: 1px solid var(--rim);
+}
+.header-notif {
+  margin-left: auto;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--ink3); border: 1px solid var(--rim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative; font-size: 14px;
+}
+.notif-badge {
+  position: absolute; top: -2px; right: -2px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--red); color: white;
+  font-size: 8px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-weight: 700;
+}
+.header-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--sky-d); border: 1px solid var(--sky);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--sky2); cursor: pointer;
+}
+
+/* ══ NAV TABS ══ */
+.nav-tabs {
+  display: flex; background: var(--ink);
+  border-bottom: 1px solid var(--rim);
+  padding: 0 4px; overflow-x: auto; gap: 2px;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  flex: 0 0 auto; padding: 10px 14px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+  color: var(--ghost); background: none; border: none;
+  cursor: pointer; white-space: nowrap; text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.nav-tab.active { color: var(--sky2); border-bottom-color: var(--sky); }
+.nav-tab .tab-icon { margin-right: 5px; }
+
+/* ══ PAGES ══ */
+main { flex: 1; overflow-y: auto; }
+.page { display: none; padding: 16px; }
+.page.active { display: block; }
+
+/* ══ CARDS ══ */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--rim);
+  border-radius: var(--r);
+  padding: 16px; margin-bottom: 12px;
+}
+.card-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--ghost);
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.dot { width: 5px; height: 5px; border-radius: 50%; }
+.dot-sky { background: var(--sky); }
+.dot-gold { background: var(--gold); }
+.dot-jade { background: var(--jade); }
+.dot-red { background: var(--red); }
+
+/* ══ CALENDAR ══ */
+.calendar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.cal-month {
+  font-family: var(--head); font-size: 18px; font-weight: 700;
+  color: var(--fog);
+}
+.cal-nav {
+  background: var(--ink3); border: 1px solid var(--rim);
+  color: var(--mist); border-radius: 6px; padding: 6px 12px;
+  cursor: pointer; font-family: var(--mono); font-size: 14px;
+}
+
+.calendar-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 3px; margin-bottom: 8px;
+}
+.cal-day-label {
+  text-align: center; font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; color: var(--ghost); padding: 4px 0;
+  text-transform: uppercase;
+}
+.cal-day {
+  aspect-ratio: 1; border-radius: 6px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer; position: relative;
+  transition: transform .1s;
+  border: 1px solid transparent;
+  background: var(--ink3);
+  min-height: 40px;
+}
+.cal-day:active { transform: scale(.93); }
+.cal-day.empty { background: transparent; border: none; cursor: default; }
+.cal-day .cal-num {
+  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  color: var(--mist);
+}
+.cal-day .cal-type {
+  font-family: var(--mono); font-size: 8px; letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+.cal-day.today { border-color: var(--sky); }
+.cal-day.today .cal-num { color: var(--sky2); }
+
+/* Day type colors */
+.cal-day.type-M  { background: rgba(45,125,210,0.15); border-color: rgba(45,125,210,0.3); }
+.cal-day.type-M .cal-num  { color: var(--sky2); }
+.cal-day.type-M .cal-type { color: var(--sky); }
+.cal-day.type-T  { background: rgba(232,160,32,0.15); border-color: rgba(232,160,32,0.3); }
+.cal-day.type-T .cal-num  { color: var(--gold2); }
+.cal-day.type-T .cal-type { color: var(--gold); }
+.cal-day.type-SBY { background: rgba(232,64,64,0.1); border-color: rgba(232,64,64,0.2); }
+.cal-day.type-SBY .cal-type { color: var(--red); font-size: 7px; }
+.cal-day.type-OFF { background: var(--ink3); }
+.cal-day.type-OFF .cal-type { color: var(--ghost); }
+.cal-day.type-FR  { background: rgba(0,184,148,0.12); border-color: rgba(0,184,148,0.25); }
+.cal-day.type-FR .cal-type { color: var(--jade); }
+.cal-day.type-CUR { background: rgba(150,80,220,0.12); border-color: rgba(150,80,220,0.25); }
+.cal-day.type-CUR .cal-type { color: #b080ff; font-size: 7px; }
+.cal-day.type-DH  { background: rgba(45,125,210,0.07); }
+.cal-day.type-DH .cal-type { color: var(--sky); opacity: 0.6; font-size: 7px; }
+
+/* ══ LEGEND ══ */
+.legend {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--mono); font-size: 10px; color: var(--mist);
+}
+.legend-dot {
+  width: 8px; height: 8px; border-radius: 2px;
+}
+
+/* ══ DAY DETAIL MODAL ══ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(8,12,20,0.85);
+  backdrop-filter: blur(8px);
+  display: none; align-items: flex-end; justify-content: center;
+  padding-bottom: 0;
+}
+.modal-overlay.open { display: flex; }
+.modal-sheet {
+  width: 100%; max-width: 480px;
+  background: var(--panel);
+  border-top: 1px solid var(--rim);
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  max-height: 85vh; overflow-y: auto;
+  position: relative;
+}
+.modal-handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--rim2); margin: 0 auto 16px;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--ink3); border: 1px solid var(--rim);
+  color: var(--mist); border-radius: 50%;
+  width: 28px; height: 28px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+/* ══ FLIGHT CARD ══ */
+.flight-card {
+  background: var(--ink3); border: 1px solid var(--rim);
+  border-radius: var(--r); padding: 14px; margin-bottom: 10px;
+}
+.flight-number {
+  font-family: var(--head); font-size: 20px; font-weight: 700;
+  color: var(--sky2); margin-bottom: 8px;
+}
+.flight-route {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+}
+.flight-airport {
+  font-family: var(--head); font-size: 24px; font-weight: 800;
+  color: var(--fog);
+}
+.flight-arrow {
+  color: var(--ghost); font-size: 16px; flex: 1; text-align: center;
+}
+.flight-times {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 11px; color: var(--mist);
+}
+
+/* ══ CREW DAY GRID ══ */
+.crew-day-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin-bottom: 12px;
+}
+.crew-shift {
+  background: var(--ink3); border-radius: var(--r);
+  padding: 12px; border: 1px solid var(--rim);
+}
+.crew-shift-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.crew-shift.morning .crew-shift-label { color: var(--sky); }
+.crew-shift.afternoon .crew-shift-label { color: var(--gold); }
+.crew-pilot {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--rim);
+}
+.crew-pilot:last-child { border-bottom: none; padding-bottom: 0; }
+.crew-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  flex-shrink: 0;
+}
+.crew-avatar.cmd { background: rgba(232,160,32,0.2); color: var(--gold2); border: 1px solid var(--gold); }
+.crew-avatar.cop { background: rgba(45,125,210,0.2); color: var(--sky2); border: 1px solid var(--sky); }
+.crew-name { font-family: var(--mono); font-size: 11px; color: var(--fog); }
+.crew-code { font-family: var(--mono); font-size: 10px; color: var(--ghost); }
+
+/* ══ CHANGE REQUEST ══ */
+.change-card {
+  background: var(--panel2); border: 1px solid var(--rim);
+  border-radius: var(--r); padding: 14px; margin-bottom: 8px;
+}
+.change-status {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 4px;
+  display: inline-block; margin-bottom: 8px;
+}
+.status-pending  { background: rgba(232,160,32,0.15); color: var(--gold2); border: 1px solid var(--gold); }
+.status-accepted { background: rgba(0,184,148,0.15); color: var(--jade); border: 1px solid var(--jade); }
+.status-rejected { background: rgba(232,64,64,0.15); color: var(--red); border: 1px solid var(--red); }
+
+.change-days {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.change-day-box {
+  flex: 1; background: var(--ink3); border-radius: 6px;
+  padding: 10px; text-align: center;
+}
+.change-day-date { font-family: var(--head); font-size: 18px; font-weight: 700; color: var(--fog); }
+.change-day-type { font-family: var(--mono); font-size: 10px; color: var(--mist); }
+.change-arrow { font-size: 18px; color: var(--ghost); }
+
+/* ══ UPLOAD ZONE ══ */
+.upload-zone {
+  border: 2px dashed var(--rim2); border-radius: var(--r);
+  padding: 32px 20px; text-align: center; cursor: pointer;
+  transition: border-color .2s, background .2s; margin-bottom: 12px;
+}
+.upload-zone:hover, .upload-zone.drag {
+  border-color: var(--sky); background: rgba(45,125,210,0.05);
+}
+.upload-icon { font-size: 32px; margin-bottom: 8px; }
+.upload-text { font-family: var(--head); font-size: 14px; color: var(--mist); margin-bottom: 4px; }
+.upload-sub { font-family: var(--mono); font-size: 10px; color: var(--ghost); letter-spacing: 1px; }
+
+/* ══ ALERTS ══ */
+.alert {
+  border-radius: var(--r); padding: 12px 14px;
+  margin-bottom: 12px; display: flex; gap: 10px; align-items: flex-start;
+}
+.alert.info    { background: rgba(45,125,210,0.1);  border: 1px solid rgba(45,125,210,0.3); }
+.alert.success { background: rgba(0,184,148,0.1);   border: 1px solid rgba(0,184,148,0.3); }
+.alert.warning { background: rgba(232,160,32,0.1);  border: 1px solid rgba(232,160,32,0.3); }
+.alert.error   { background: rgba(232,64,64,0.1);   border: 1px solid rgba(232,64,64,0.3); }
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-title { font-family: var(--mono); font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+.alert.info .alert-title    { color: var(--sky2); }
+.alert.success .alert-title { color: var(--jade); }
+.alert.warning .alert-title { color: var(--gold2); }
+.alert.error .alert-title   { color: var(--red); }
+.alert-text { font-family: var(--mono); font-size: 11px; color: var(--mist); line-height: 1.5; }
+
+/* ══ SPINNER ══ */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid var(--rim); border-top-color: var(--sky);
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-block {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 32px; color: var(--mist);
+  font-family: var(--mono); font-size: 12px; letter-spacing: 1px;
+}
+
+/* ══ BUTTONS ══ */
+.btn-secondary {
+  padding: 10px 20px; background: var(--ink3);
+  border: 1px solid var(--rim); color: var(--mist);
+  border-radius: var(--r); font-family: var(--mono); font-size: 12px;
+  cursor: pointer; width: 100%; margin-bottom: 8px;
+  letter-spacing: 1px; text-transform: uppercase;
+  transition: border-color .2s, color .2s;
+}
+.btn-secondary:hover { border-color: var(--sky); color: var(--sky2); }
+.btn-sky {
+  padding: 10px 20px; background: var(--sky-d);
+  border: 1px solid var(--sky); color: var(--sky2);
+  border-radius: var(--r); font-family: var(--mono); font-size: 12px;
+  cursor: pointer; width: 100%; margin-bottom: 8px;
+  letter-spacing: 1px; text-transform: uppercase;
+  transition: background .2s;
+}
+.btn-sky:hover { background: rgba(45,125,210,0.25); }
+.btn-jade {
+  padding: 10px 20px; background: var(--jade-d);
+  border: 1px solid var(--jade); color: var(--jade);
+  border-radius: var(--r); font-family: var(--mono); font-size: 12px;
+  cursor: pointer; width: 100%; margin-bottom: 8px;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.btn-red {
+  padding: 10px 20px; background: var(--red-d);
+  border: 1px solid var(--red); color: var(--red);
+  border-radius: var(--r); font-family: var(--mono); font-size: 12px;
+  cursor: pointer; width: 100%; margin-bottom: 8px;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+
+/* ══ MISC ══ */
+.row { display: flex; gap: 10px; margin-bottom: 10px; }
+.field { flex: 1; }
+.divider { border: none; border-top: 1px solid var(--rim); margin: 12px 0; }
+.badge {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 1px;
+  padding: 2px 7px; border-radius: 4px; font-weight: 700;
+  text-transform: uppercase; display: inline-block;
+}
+.badge-sky  { background: var(--sky-d);  color: var(--sky2);  border: 1px solid var(--sky); }
+.badge-gold { background: var(--gold-d); color: var(--gold2); border: 1px solid var(--gold); }
+.badge-jade { background: var(--jade-d); color: var(--jade);  border: 1px solid var(--jade); }
+.badge-red  { background: var(--red-d);  color: var(--red);   border: 1px solid var(--red); }
+
+.text-sky   { color: var(--sky2); }
+.text-gold  { color: var(--gold2); }
+.text-jade  { color: var(--jade); }
+.text-red   { color: var(--red); }
+.text-mist  { color: var(--mist); }
+.text-ghost { color: var(--ghost); }
+.mono       { font-family: var(--mono); }
+.head       { font-family: var(--head); }
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+
+/* ══ PILOT LIST ══ */
+.pilot-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--rim);
+}
+.pilot-row:last-child { border-bottom: none; }
+.pilot-info { flex: 1; }
+.pilot-name { font-family: var(--head); font-size: 13px; font-weight: 600; color: var(--fog); }
+.pilot-meta { font-family: var(--mono); font-size: 10px; color: var(--ghost); margin-top: 1px; }
+
+/* ══ RESPONSIVE ══ */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type=number] { -moz-appearance: textfield; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ AUTH ══════════ -->
+<div id="auth-screen">
+  <div class="auth-logo">Air<span>Side</span></div>
+  <div class="auth-tagline">Base Madrid · Binter Canarias</div>
+
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Entrar</button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Registrarse</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="form-login">
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input class="field-input" id="login-email" type="email" placeholder="tu@email.com" autocomplete="email">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Contraseña</label>
+        <input class="field-input" id="login-pass" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Entrar</button>
+      <p class="auth-msg" id="login-msg"></p>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="form-register" style="display:none">
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input class="field-input" id="reg-email" type="email" placeholder="tu@email.com">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Contraseña</label>
+        <input class="field-input" id="reg-pass" type="password" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label class="field-label">Nombre</label>
+          <input class="field-input" id="reg-nombre" type="text" placeholder="Nombre completo">
+        </div>
+        <div class="field">
+          <label class="field-label">Código</label>
+          <input class="field-input" id="reg-codigo" type="text" placeholder="ESH" maxlength="5"
+            oninput="this.value=this.value.toUpperCase()">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label class="field-label">Función</label>
+          <select class="field-input" id="reg-funcion">
+            <option value="CMD">Comandante</option>
+            <option value="COP">Copiloto</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Nivel</label>
+          <select class="field-input" id="reg-nivel">
+            <option value="1">Nivel 1</option>
+            <option value="2">Nivel 2</option>
+            <option value="3" selected>Nivel 3</option>
+            <option value="4">Nivel 4</option>
+            <option value="5">Nivel 5</option>
+            <option value="6">Nivel 6</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="doRegister()">Crear cuenta</button>
+      <p class="auth-msg" id="reg-msg"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ WELCOME ══════════ -->
+<div id="welcome-screen">
+  <div class="welcome-epaulettes" id="welcome-svg"></div>
+  <div class="welcome-name" id="welcome-name">Piloto</div>
+  <div class="welcome-role" id="welcome-role">Binter Canarias · Base Madrid</div>
+  <button class="btn-continue" onclick="enterApp()">Autorizado ›</button>
+</div>
+
+<!-- ══════════ MAIN APP ══════════ -->
+<div id="main-app">
+  <header>
+    <div class="header-logo">Air<span>Side</span></div>
+    <div class="header-base">MAD</div>
+    <div class="header-notif" id="notif-btn" onclick="showTab('cambios')">
+      🔔
+      <div class="notif-badge" id="notif-count" style="display:none">0</div>
+    </div>
+    <div class="header-avatar" id="header-avatar" onclick="showTab('perfil')">--</div>
+  </header>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('hoy')"><span class="tab-icon">✈</span>Hoy</button>
+    <button class="nav-tab" onclick="showTab('base')"><span class="tab-icon">👥</span>Base</button>
+    <button class="nav-tab" onclick="showTab('roster')"><span class="tab-icon">📅</span>Roster</button>
+    <button class="nav-tab" onclick="showTab('cambios')"><span class="tab-icon">🔄</span>Cambios</button>
+    <button class="nav-tab" onclick="showTab('nominas')"><span class="tab-icon">💰</span>Nóminas</button>
+    <button class="nav-tab" onclick="showTab('perfil')"><span class="tab-icon">👤</span>Perfil</button>
+  </div>
+
+  <main>
+
+    <!-- ── HOY ── -->
+    <div class="page active" id="page-hoy">
+      <div id="hoy-content">
+        <div class="loading-block"><div class="spinner"></div><span>Cargando...</span></div>
+      </div>
+    </div>
+
+    <!-- ── BASE ── -->
+    <div class="page" id="page-base">
+      <div class="card">
+        <div class="card-title"><div class="dot dot-sky"></div>Tripulaciones hoy</div>
+        <div id="base-hoy-content">
+          <div class="loading-block"><div class="spinner"></div><span>Cargando...</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><div class="dot dot-gold"></div>Pilotos Base Madrid</div>
+        <div id="pilotos-list">
+          <div class="loading-block"><div class="spinner"></div><span>Cargando...</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ROSTER ── -->
+    <div class="page" id="page-roster">
+      <div id="roster-upload-section">
+        <div class="alert info">
+          <div class="alert-icon">📋</div>
+          <div class="alert-content">
+            <div class="alert-title">Sube tu roster mensual</div>
+            <div class="alert-text">El PDF que recibes de Binter con tu programación. Se parsea automáticamente.</div>
+          </div>
+        </div>
+        <div class="upload-zone" id="roster-upload-zone"
+          onclick="document.getElementById('roster-file').click()"
+          ondragover="event.preventDefault();this.classList.add('drag')"
+          ondragleave="this.classList.remove('drag')"
+          ondrop="handleRosterDrop(event)">
+          <div class="upload-icon">📂</div>
+          <div class="upload-text">Toca para subir roster PDF</div>
+          <div class="upload-sub">Personal Crew Schedule Report · Binter</div>
+        </div>
+        <input type="file" id="roster-file" accept=".pdf" style="display:none" onchange="processRoster(this.files[0])">
+        <div id="roster-loading" style="display:none" class="loading-block">
+          <div class="spinner"></div>
+          <span id="roster-loading-text">Procesando roster...</span>
+        </div>
+      </div>
+      <div id="roster-calendar-section" style="display:none">
+        <div class="card">
+          <div class="calendar-header">
+            <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+            <div class="cal-month" id="cal-month-label">Abril 2026</div>
+            <button class="cal-nav" onclick="changeMonth(1)">›</button>
+          </div>
+          <div class="calendar-grid" id="cal-day-labels"></div>
+          <div class="calendar-grid" id="cal-grid"></div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--sky)"></div>Mañana</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Tarde</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--jade)"></div>Franco</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>SBY</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#b080ff"></div>Curso</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--ghost)"></div>Libre</div>
+          </div>
+        </div>
+        <button class="btn-secondary" onclick="showRosterUpload()">↑ Subir nuevo roster</button>
+      </div>
+    </div>
+
+    <!-- ── CAMBIOS ── -->
+    <div class="page" id="page-cambios">
+      <div class="card">
+        <div class="card-title"><div class="dot dot-gold"></div>Mis solicitudes</div>
+        <div id="mis-cambios">
+          <div style="color:var(--ghost);font-size:12px;text-align:center;padding:20px">
+            No hay solicitudes activas
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><div class="dot dot-jade"></div>Bolsa de cambios</div>
+        <div id="bolsa-cambios">
+          <div class="loading-block"><div class="spinner"></div><span>Cargando...</span></div>
+        </div>
+      </div>
+      <button class="btn-sky" onclick="showProponerCambio()">+ Proponer cambio</button>
+    </div>
+
+    <!-- ── NÓMINAS ── -->
+    <div class="page" id="page-nominas">
+      <div class="alert info">
+        <div class="alert-icon">🔒</div>
+        <div class="alert-content">
+          <div class="alert-title">Sección privada</div>
+          <div class="alert-text">Tus datos de nómina son solo visibles para ti. Nadie más tiene acceso.</div>
+        </div>
+      </div>
+      <div style="text-align:center;padding:32px 0">
+        <div style="font-size:48px;margin-bottom:12px">💰</div>
+        <div style="font-family:var(--head);font-size:18px;font-weight:700;color:var(--fog);margin-bottom:8px">
+          Módulo PilotPay
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--ghost);margin-bottom:24px">
+          Calculadora, comparativa y simulador IRPF
+        </div>
+        <button class="btn-sky" onclick="openPilotPay()">Abrir PilotPay →</button>
+      </div>
+    </div>
+
+    <!-- ── PERFIL ── -->
+    <div class="page" id="page-perfil">
+      <div id="perfil-content">
+        <div class="loading-block"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ DAY DETAIL MODAL ══ -->
+<div class="modal-overlay" id="day-modal" onclick="closeDayModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeDayModal()">✕</button>
+    <div id="day-modal-content"></div>
+  </div>
+</div>
+
+<!-- ══════════ FIREBASE + APP LOGIC ══════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+         onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getDatabase, ref, set, get, onValue, push, update, query,
+         orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAPgJfxBoqv_bKuVDDjvU927nQe-b0cCbQ",
+  authDomain: "airside-mad.firebaseapp.com",
+  databaseURL: "https://airside-mad-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "airside-mad",
+  storageBucket: "airside-mad.firebasestorage.app",
+  messagingSenderId: "650362453429",
+  appId: "1:650362453429:web:a6351352363a94a702adfc"
+};
+
+const fireApp  = initializeApp(firebaseConfig);
+const auth     = getAuth(fireApp);
+const db       = getDatabase(fireApp);
+
+// ── STATE ──
+let currentUser = null;
+let userProfile = null;
+let myRoster    = {};   // { "2026-04-01": { tipo, vuelos, ... }, ... }
+let allRosters  = {};   // { uid: { ... } }
+let allUsers    = {};   // { uid: { nombre, codigo, funcion, ... } }
+let calYear     = new Date().getFullYear();
+let calMonth    = new Date().getMonth(); // 0-indexed
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    currentUser = user;
+    await loadUserProfile();
+    await loadAllUsers();
+    loadMyRoster();
+    loadAllRosters();
+    showWelcomeScreen();
+  } else {
+    currentUser = null;
+    userProfile = null;
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'none';
+  }
+});
+
+async function loadUserProfile() {
+  const snap = await get(ref(db, `usuarios/${currentUser.uid}`));
+  if (snap.exists()) {
+    userProfile = snap.val();
+  }
+}
+
+async function loadAllUsers() {
+  const snap = await get(ref(db, 'usuarios'));
+  if (snap.exists()) allUsers = snap.val();
+}
+
+function loadMyRoster() {
+  onValue(ref(db, `rosters/${currentUser.uid}`), snap => {
+    myRoster = snap.exists() ? snap.val() : {};
+    if (document.getElementById('page-roster').classList.contains('active')) renderRoster();
+    renderHoy();
+  });
+}
+
+function loadAllRosters() {
+  onValue(ref(db, 'rosters'), snap => {
+    allRosters = snap.exists() ? snap.val() : {};
+    renderBaseHoy();
+  });
+}
+
+// ── AUTH FUNCTIONS ──
+window.switchAuthTab = (tab) => {
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+};
+
+window.doLogin = async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value.trim();
+  const msg   = document.getElementById('login-msg');
+  msg.textContent = '';
+  if (!email || !pass) { msg.textContent = 'Rellena todos los campos'; msg.className = 'auth-msg err'; return; }
+  try {
+    msg.textContent = 'Conectando...'; msg.className = 'auth-msg';
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    const msgs = {
+      'auth/user-not-found': 'Usuario no encontrado',
+      'auth/wrong-password': 'Contraseña incorrecta',
+      'auth/invalid-email': 'Email no válido',
+      'auth/invalid-credential': 'Credenciales incorrectas',
+    };
+    msg.textContent = msgs[e.code] || 'Error al entrar';
+    msg.className = 'auth-msg err';
+  }
+};
+
+window.doRegister = async () => {
+  const email   = document.getElementById('reg-email').value.trim();
+  const pass    = document.getElementById('reg-pass').value.trim();
+  const nombre  = document.getElementById('reg-nombre').value.trim();
+  const codigo  = document.getElementById('reg-codigo').value.trim().toUpperCase();
+  const funcion = document.getElementById('reg-funcion').value;
+  const nivel   = parseInt(document.getElementById('reg-nivel').value);
+  const msg     = document.getElementById('reg-msg');
+  msg.textContent = '';
+
+  if (!email || !pass || !nombre || !codigo) {
+    msg.textContent = 'Rellena todos los campos'; msg.className = 'auth-msg err'; return;
+  }
+  try {
+    msg.textContent = 'Creando cuenta...'; msg.className = 'auth-msg';
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await set(ref(db, `usuarios/${cred.user.uid}`), {
+      nombre, codigo, funcion, nivel, base: 'MAD',
+      verificado: false, nivel_acceso: 0,
+      email, createdAt: new Date().toISOString()
+    });
+    msg.textContent = '✓ Cuenta creada. Pendiente de verificación por el administrador.';
+    msg.className = 'auth-msg ok';
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use': 'Email ya registrado',
+      'auth/weak-password': 'Contraseña muy débil (mínimo 6 caracteres)',
+    };
+    msg.textContent = msgs[e.code] || 'Error al registrar';
+    msg.className = 'auth-msg err';
+  }
+};
+
+window.doLogout = async () => {
+  if (confirm('¿Cerrar sesión?')) await signOut(auth);
+};
+
+// ── WELCOME ──
+function showWelcomeScreen() {
+  document.getElementById('auth-screen').style.display = 'none';
+  const ws = document.getElementById('welcome-screen');
+  ws.style.display = 'flex';
+
+  const p = userProfile || {};
+  const isCMD = p.funcion === 'CMD';
+  const nombre = p.nombre ? p.nombre.split(' ')[0] : 'Piloto';
+  const nivel  = p.nivel || 3;
+
+  document.getElementById('welcome-name').textContent = nombre;
+  document.getElementById('welcome-role').textContent =
+    `${isCMD ? 'Comandante' : 'Copiloto'} · Nivel ${nivel} · Base Madrid`;
+  document.getElementById('welcome-svg').innerHTML = buildEpaulettes(p.funcion || 'CMD', nivel, 180);
+}
+
+window.enterApp = () => {
+  document.getElementById('welcome-screen').style.display = 'none';
+  const app = document.getElementById('main-app');
+  app.style.display = 'flex';
+  const p = userProfile || {};
+  const initials = p.codigo || (p.nombre || 'AA').slice(0,2).toUpperCase();
+  document.getElementById('header-avatar').textContent = initials;
+  renderHoy();
+  renderBaseHoy();
+  checkNotifications();
+};
+
+// ── EPAULETTES SVG ──
+function buildEpaulettes(funcion, nivel, size = 140) {
+  const isCMD = funcion === 'CMD';
+  const stripes = isCMD ? 4 : 3;
+  const gold = '#e8a020', goldL = '#f5c842', bg = '#0f1828', border = '#1e3a5f';
+  let bars = '';
+  for (let i = 0; i < 4; i++) {
+    const filled = i < stripes;
+    bars += `<rect x="12" y="${20 + i*22}" width="76" height="13" rx="3"
+      fill="${filled ? gold : border}" opacity="${filled ? 1 : 0.2}"/>`;
+    if (filled) bars += `<rect x="12" y="${20 + i*22}" width="76" height="4" rx="2"
+      fill="${goldL}" opacity="0.45"/>`;
+  }
+  const star = isCMD ? `<text x="50" y="122" text-anchor="middle" font-size="20" fill="${gold}">★</text>` : '';
+  const label = `<text x="50" y="148" text-anchor="middle"
+    font-family="Syne,sans-serif" font-size="9" font-weight="700" letter-spacing="2"
+    fill="#5ba4f5">${isCMD ? 'COMANDANTE' : 'COPILOTO'}</text>
+    <text x="50" y="160" text-anchor="middle"
+    font-family="JetBrains Mono,monospace" font-size="8" fill="#7890b0">NVL ${nivel}</text>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 170" width="${size}">
+    <rect x="2" y="2" width="96" height="132" rx="12" fill="${bg}" stroke="${border}" stroke-width="1.5"/>
+    ${bars}${star}${label}
+  </svg>`;
+}
+
+// ── TABS ──
+window.showTab = (name) => {
+  document.querySelectorAll('.nav-tab').forEach((t,i) => {
+    const tabs = ['hoy','base','roster','cambios','nominas','perfil'];
+    t.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (name === 'roster')  renderRoster();
+  if (name === 'base')    { renderBaseHoy(); renderPilotosList(); }
+  if (name === 'cambios') renderCambios();
+  if (name === 'perfil')  renderPerfil();
+  if (name === 'hoy')     renderHoy();
+};
+
+// ── HOY ──
+function renderHoy() {
+  const today = new Date();
+  const dateStr = formatDate(today);
+  const day = myRoster[dateStr];
+  const el = document.getElementById('hoy-content');
+
+  const dayNames = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const monthNames = ['enero','febrero','marzo','abril','mayo','junio',
+                      'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const header = `<div style="margin-bottom:16px">
+    <div style="font-family:var(--head);font-size:28px;font-weight:800;color:var(--fog)">
+      ${dayNames[today.getDay()]} ${today.getDate()}
+    </div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--ghost);letter-spacing:2px;text-transform:uppercase">
+      ${monthNames[today.getMonth()]} ${today.getFullYear()}
+    </div>
+  </div>`;
+
+  if (!day || !Object.keys(myRoster).length) {
+    el.innerHTML = header + `<div class="alert info">
+      <div class="alert-icon">📋</div>
+      <div class="alert-content">
+        <div class="alert-title">Sin roster cargado</div>
+        <div class="alert-text">Sube tu roster en la pestaña Roster para ver tu programación de hoy.</div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  const typeBadge = {
+    M:   `<span class="badge badge-sky">TURNO MAÑANA</span>`,
+    T:   `<span class="badge badge-gold">TURNO TARDE</span>`,
+    SBY: `<span class="badge badge-red">IMAGINARIA</span>`,
+    OFF: `<span style="font-family:var(--mono);font-size:11px;color:var(--ghost)">DÍA LIBRE</span>`,
+    FR:  `<span class="badge badge-jade">FRANCO</span>`,
+    CUR: `<span class="badge" style="background:rgba(150,80,220,0.15);color:#b080ff;border:1px solid #b080ff">CURSO</span>`,
+    DH:  `<span class="badge badge-sky" style="opacity:.6">SITUADO</span>`,
+  };
+
+  let flightsHTML = '';
+  if (day.vuelos && day.vuelos.length > 0) {
+    day.vuelos.forEach(v => {
+      flightsHTML += `<div class="flight-card">
+        <div class="flight-number">${v.numero || '—'} ${v.situado ? '<span style="font-size:11px;color:var(--ghost)">(situado)</span>' : ''}</div>
+        <div class="flight-route">
+          <div class="flight-airport">${v.origen || '—'}</div>
+          <div class="flight-arrow">──›</div>
+          <div class="flight-airport">${v.destino || '—'}</div>
+        </div>
+        <div class="flight-times">
+          <span>${v.salida || ''}</span>
+          <span style="color:var(--ghost)">${v.avion || 'E2B'}</span>
+          <span>${v.llegada || ''}</span>
+        </div>
+      </div>`;
+    });
+  }
+
+  let schedHTML = '';
+  if (day.presentacion) schedHTML += `<div style="font-family:var(--mono);font-size:12px;color:var(--mist);margin-bottom:4px">
+    <span style="color:var(--ghost)">Presentación</span> ${day.presentacion}
+  </div>`;
+  if (day.fin_jornada) schedHTML += `<div style="font-family:var(--mono);font-size:12px;color:var(--mist)">
+    <span style="color:var(--ghost)">Fin jornada</span> ${day.fin_jornada}
+  </div>`;
+
+  el.innerHTML = header + `
+    <div class="card">
+      <div style="margin-bottom:12px">${typeBadge[day.tipo] || day.tipo}</div>
+      ${schedHTML}
+    </div>
+    ${flightsHTML || ''}
+  `;
+}
+
+// ── BASE HOY ──
+function renderBaseHoy() {
+  const today = formatDate(new Date());
+  const el = document.getElementById('base-hoy-content');
+  const morning = [], afternoon = [], sby = [];
+
+  Object.entries(allRosters).forEach(([uid, roster]) => {
+    const day = roster[today];
+    const user = allUsers[uid];
+    if (!day || !user) return;
+    if (day.tipo === 'M') morning.push({ user, day });
+    else if (day.tipo === 'T') afternoon.push({ user, day });
+    else if (day.tipo === 'SBY') sby.push({ user, day });
+  });
+
+  if (!morning.length && !afternoon.length) {
+    el.innerHTML = `<div style="color:var(--ghost);font-size:12px;text-align:center;padding:16px">
+      Sin datos de tripulación para hoy
+    </div>`;
+    return;
+  }
+
+  const pilotRow = (p) => `
+    <div class="crew-pilot">
+      <div class="crew-avatar ${p.user.funcion?.toLowerCase() === 'cmd' ? 'cmd' : 'cop'}">
+        ${p.user.codigo || '??'}
+      </div>
+      <div>
+        <div class="crew-name">${p.user.nombre || '—'}</div>
+        <div class="crew-code">${p.user.funcion || ''} · Nivel ${p.user.nivel || '?'}</div>
+      </div>
+    </div>`;
+
+  el.innerHTML = `
+    <div class="crew-day-grid">
+      <div class="crew-shift morning">
+        <div class="crew-shift-label">☀ Mañana 06:00</div>
+        ${morning.length ? morning.map(pilotRow).join('') : '<div style="color:var(--ghost);font-size:11px">Sin asignar</div>'}
+      </div>
+      <div class="crew-shift afternoon">
+        <div class="crew-shift-label">🌙 Tarde 15:40</div>
+        ${afternoon.length ? afternoon.map(pilotRow).join('') : '<div style="color:var(--ghost);font-size:11px">Sin asignar</div>'}
+      </div>
+    </div>
+    ${sby.length ? `<div style="font-family:var(--mono);font-size:11px;color:var(--red);margin-top:4px">
+      SBY: ${sby.map(p => p.user.codigo).join(', ')}
+    </div>` : ''}
+  `;
+}
+
+// ── PILOTOS LIST ──
+function renderPilotosList() {
+  const el = document.getElementById('pilotos-list');
+  const pilots = Object.entries(allUsers)
+    .filter(([, u]) => u.base === 'MAD')
+    .sort((a, b) => {
+      if (a[1].funcion !== b[1].funcion) return a[1].funcion === 'CMD' ? -1 : 1;
+      return (a[1].nombre || '').localeCompare(b[1].nombre || '');
+    });
+
+  if (!pilots.length) {
+    el.innerHTML = `<div style="color:var(--ghost);font-size:12px;text-align:center;padding:16px">Sin pilotos registrados</div>`;
+    return;
+  }
+
+  el.innerHTML = pilots.map(([uid, u]) => `
+    <div class="pilot-row">
+      <div class="crew-avatar ${u.funcion?.toLowerCase() === 'cmd' ? 'cmd' : 'cop'}" style="width:36px;height:36px;font-size:12px">
+        ${u.codigo || '??'}
+      </div>
+      <div class="pilot-info">
+        <div class="pilot-name">${u.nombre || '—'}</div>
+        <div class="pilot-meta">${u.funcion || ''} · NVL ${u.nivel || '?'} · ${u.verificado ? '✓ Verificado' : '⏳ Pendiente'}</div>
+      </div>
+      ${u.funcion === 'CMD' ? '<span class="badge badge-gold">CMD</span>' : '<span class="badge badge-sky">COP</span>'}
+    </div>
+  `).join('');
+}
+
+// ── ROSTER ──
+function renderRoster() {
+  const hasRoster = Object.keys(myRoster).length > 0;
+  document.getElementById('roster-upload-section').style.display = hasRoster ? 'none' : 'block';
+  document.getElementById('roster-calendar-section').style.display = hasRoster ? 'block' : 'none';
+  if (hasRoster) renderCalendar();
+}
+
+window.showRosterUpload = () => {
+  document.getElementById('roster-upload-section').style.display = 'block';
+  document.getElementById('roster-calendar-section').style.display = 'none';
+};
+
+function renderCalendar() {
+  const year = calYear, month = calMonth;
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                      'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('cal-month-label').textContent = `${monthNames[month]} ${year}`;
+
+  const dayLabels = ['L','M','X','J','V','S','D'];
+  document.getElementById('cal-day-labels').innerHTML =
+    dayLabels.map(d => `<div class="cal-day-label">${d}</div>`).join('');
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay  = new Date(year, month + 1, 0);
+  const startDow = (firstDay.getDay() + 6) % 7; // Monday = 0
+
+  let html = '';
+  for (let i = 0; i < startDow; i++) html += `<div class="cal-day empty"></div>`;
+
+  const today = formatDate(new Date());
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const day = myRoster[dateStr];
+    const tipo = day?.tipo || 'OFF';
+    const isToday = dateStr === today;
+    const typeLabel = { M:'MAÑ', T:'TAR', SBY:'SBY', OFF:'', FR:'FRA', CUR:'CUR', DH:'DH' };
+    html += `<div class="cal-day type-${tipo} ${isToday ? 'today' : ''}"
+      onclick="showDayDetail('${dateStr}')">
+      <span class="cal-num">${d}</span>
+      <span class="cal-type">${typeLabel[tipo] || tipo}</span>
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = html;
+}
+
+window.changeMonth = (dir) => {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderCalendar();
+};
+
+// ── DAY DETAIL ──
+window.showDayDetail = (dateStr) => {
+  const day = myRoster[dateStr];
+  if (!day) return;
+  const [y,m,d] = dateStr.split('-');
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                      'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  let flightsHTML = '';
+  if (day.vuelos?.length) {
+    day.vuelos.forEach(v => {
+      flightsHTML += `<div class="flight-card">
+        <div class="flight-number">${v.numero} ${v.situado ? '<span style="font-size:10px;color:var(--ghost)">(situado)</span>':''}</div>
+        <div class="flight-route">
+          <div class="flight-airport">${v.origen}</div>
+          <div class="flight-arrow">──›</div>
+          <div class="flight-airport">${v.destino}</div>
+        </div>
+        <div class="flight-times">
+          <span>${v.salida}</span>
+          <span style="color:var(--ghost)">${v.avion || 'E2B'}</span>
+          <span>${v.llegada}</span>
+        </div>
+      </div>`;
+    });
+  }
+
+  const typeColors = { M:'var(--sky2)', T:'var(--gold2)', SBY:'var(--red)', FR:'var(--jade)', OFF:'var(--ghost)', CUR:'#b080ff', DH:'var(--sky)' };
+  const typeNames  = { M:'Turno Mañana', T:'Turno Tarde', SBY:'Imaginaria', FR:'Franco', OFF:'Día Libre', CUR:'Curso', DH:'Situado' };
+
+  document.getElementById('day-modal-content').innerHTML = `
+    <div style="margin-bottom:16px">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--ghost);letter-spacing:2px;margin-bottom:4px">
+        ${d} ${monthNames[parseInt(m)-1]} ${y}
+      </div>
+      <div style="font-family:var(--head);font-size:22px;font-weight:700;color:${typeColors[day.tipo] || 'var(--fog)'}">${typeNames[day.tipo] || day.tipo}</div>
+      ${day.presentacion ? `<div style="font-family:var(--mono);font-size:12px;color:var(--mist);margin-top:6px">Presentación: ${day.presentacion} · Fin: ${day.fin_jornada || '—'}</div>` : ''}
+    </div>
+    ${flightsHTML}
+    ${day.tipo !== 'OFF' && day.tipo !== 'FR' ? `
+    <div style="margin-top:12px">
+      <button class="btn-sky" onclick="propCambioFromDay('${dateStr}')">🔄 Proponer cambio este día</button>
+    </div>` : ''}
+  `;
+  document.getElementById('day-modal').classList.add('open');
+};
+
+window.closeDayModal = (e) => {
+  if (!e || e.target === document.getElementById('day-modal')) {
+    document.getElementById('day-modal').classList.remove('open');
+  }
+};
+
+// ── ROSTER PARSER ──
+window.handleRosterDrop = (e) => {
+  e.preventDefault();
+  document.getElementById('roster-upload-zone').classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f) processRoster(f);
+};
+
+window.processRoster = async (file) => {
+  if (!file) return;
+  document.getElementById('roster-upload-zone').style.display = 'none';
+  document.getElementById('roster-loading').style.display = 'flex';
+
+  try {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const rows = {};
+      for (const item of content.items) {
+        if (!item.str.trim()) continue;
+        const y = Math.round(item.transform[5]);
+        if (!rows[y]) rows[y] = [];
+        rows[y].push({ x: item.transform[4], str: item.str });
+      }
+      const sortedYs = Object.keys(rows).map(Number).sort((a, b) => b - a);
+      for (const y of sortedYs) {
+        fullText += rows[y].sort((a,b) => a.x-b.x).map(i => i.str).join('  ') + '\n';
+      }
+    }
+
+    document.getElementById('roster-loading-text').textContent = 'Analizando programación...';
+    const parsed = parseBinterRoster(fullText);
+
+    if (Object.keys(parsed).length === 0) throw new Error('No se pudieron extraer días del roster');
+
+    // Save to Firebase
+    document.getElementById('roster-loading-text').textContent = 'Guardando en la nube...';
+    await set(ref(db, `rosters/${currentUser.uid}`), parsed);
+
+    // Update calMonth to roster month
+    const firstDate = Object.keys(parsed).sort()[0];
+    if (firstDate) {
+      const [y,m] = firstDate.split('-');
+      calYear = parseInt(y); calMonth = parseInt(m) - 1;
+    }
+
+    document.getElementById('roster-loading').style.display = 'none';
+    renderRoster();
+
+  } catch(err) {
+    document.getElementById('roster-loading').style.display = 'none';
+    document.getElementById('roster-upload-zone').style.display = 'block';
+    document.getElementById('roster-upload-zone').innerHTML = `
+      <div class="upload-icon">❌</div>
+      <div class="upload-text" style="color:var(--red)">Error al procesar</div>
+      <div class="upload-sub">${err.message}</div>
+    `;
+  }
+};
+
+function parseBinterRoster(text) {
+  const roster = {};
+  const lines = text.split('\n');
+
+  // Find date headers: "01/04", "02/04", etc.
+  // The roster has dates as column headers
+  const datePattern = /(\d{2})\/(\d{2})/g;
+
+  // Extract year from "01/04/2026 - 30/04/2026"
+  const yearMatch = text.match(/\d{2}\/\d{2}\/(\d{4})/);
+  const year = yearMatch ? yearMatch[1] : new Date().getFullYear().toString();
+
+  // Find all date positions
+  const allDates = [];
+  let m;
+  const headerLine = lines.find(l => l.match(/\d{2}\/\d{2}/) && !l.match(/\d{4}/));
+  if (!headerLine) {
+    // Try to find dates in the full text
+    const dateMatches = [...text.matchAll(/(\d{2})\/(\d{2})\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Lun|Mar|Mié|Jue|Vie|Sáb|Dom)?/g)];
+    dateMatches.forEach(dm => {
+      const d = dm[1], mo = dm[2];
+      if (parseInt(mo) >= 1 && parseInt(mo) <= 12 && parseInt(d) >= 1 && parseInt(d) <= 31) {
+        const dateStr = `${year}-${mo.padStart(2,'0')}-${d.padStart(2,'0')}`;
+        if (!allDates.includes(dateStr)) allDates.push(dateStr);
+      }
+    });
+  }
+
+  // Parse day blocks by finding sequences after dates
+  // Strategy: find each date and then look for the type indicators
+
+  // Identify OFF, FR, SBY, and flight days
+  const fullTextOneLine = text.replace(/\n/g, ' ');
+
+  // Find date blocks: each date followed by content until next date
+  const blockPattern = /(\d{2})\/(\d{2})\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun|Wed)\s+([\s\S]*?)(?=\d{2}\/\d{2}\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)|Total Hours)/g;
+
+  let blocks = [...text.matchAll(/(\d{2})\/(\d{2})\s*\n\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Wed|Thu)/g)];
+
+  // Simpler approach: find each date and classify nearby content
+  const dateLinePattern = /^(\d{2})\/(\d{2})$/;
+  const dayTypePatterns = {
+    OFF: /^\s*OFF\s*$/m,
+    FR:  /^\s*FR\.\s*$/m,
+    SBY: /SBY/,
+    CUR: /CRE2|ERF2|EQE2|FCE2|ESH0[0-9]/,
+    M:   /^06[::]?\d{2}/m,
+    T:   /^15[::]?\d{2}/m,
+  };
+
+  // Split text into day sections using dates as delimiters
+  const daySections = text.split(/(\d{2}\/\d{2})\s*\n\s*(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)/);
+
+  // More robust: scan line by line
+  let currentDate = null;
+  let currentBlock = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    // Check if this line is a date
+    const dm = line.match(/^(\d{2})\/(\d{2})$/);
+    if (dm) {
+      // Process previous block
+      if (currentDate && currentBlock.length > 0) {
+        roster[currentDate] = classifyDayBlock(currentBlock.join('\n'));
+      }
+      const day = dm[1], mo = dm[2];
+      currentDate = `${year}-${mo.padStart(2,'0')}-${day.padStart(2,'0')}`;
+      currentBlock = [];
+      continue;
+    }
+
+    // Skip day-of-week lines
+    if (/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun|Lun|Mar|Mi|Jue|Vie|S[aá]b|Dom)$/.test(line)) continue;
+
+    if (currentDate) currentBlock.push(line);
+  }
+  // Last block
+  if (currentDate && currentBlock.length > 0) {
+    roster[currentDate] = classifyDayBlock(currentBlock.join('\n'));
+  }
+
+  return roster;
+}
+
+function classifyDayBlock(blockText) {
+  const t = blockText.trim();
+  const vuelos = [];
+
+  // Check for OFF
+  if (/^\s*OFF\s*$/m.test(t) || /^OFF$/.test(t.trim())) {
+    return { tipo: 'OFF', vuelos: [] };
+  }
+
+  // Check for Franco
+  if (/^FR\./.test(t) || /\bFR\.\b/.test(t)) {
+    const sbm = t.match(/(\d{2}:\d{2})/g);
+    return { tipo: 'FR', vuelos: [], presentacion: sbm?.[0] || null, fin_jornada: sbm?.[1] || null };
+  }
+
+  // Check for SBY
+  if (/SBY/.test(t)) {
+    const times = t.match(/(\d{2}:\d{2})/g);
+    return { tipo: 'SBY', vuelos: [], presentacion: times?.[0] || null, fin_jornada: times?.[1] || null };
+  }
+
+  // Check for courses
+  if (/CRE2|ERF2|EQE2|FCE2|ESH0\d/.test(t)) {
+    // Could still have flights
+    const courseMatch = t.match(/(CRE2|ERF2|EQE2|FCE2|ESH0\d[^  \n]*)/);
+    // Check if there are also flight numbers
+    const flightNums = extractFlights(t);
+    if (flightNums.length > 0) {
+      return { tipo: flightNums[0].salida < '12:00' ? 'M' : 'T',
+               vuelos: flightNums, curso: courseMatch?.[1] || null,
+               presentacion: flightNums[0].presentacion };
+    }
+    return { tipo: 'CUR', vuelos: [], curso: courseMatch?.[1] || 'Formación' };
+  }
+
+  // Check for flights
+  const flights = extractFlights(t);
+  if (flights.length > 0) {
+    const firstFlight = flights[0];
+    const pres = firstFlight.presentacion || firstFlight.salida;
+    const tipo = pres && pres < '12:00' ? 'M' : 'T';
+    // Check if situado (has *)
+    const situado = t.includes('*');
+    return {
+      tipo: situado ? 'DH' : tipo,
+      vuelos: flights,
+      presentacion: firstFlight.presentacion || null,
+      fin_jornada: extractFinJornada(t),
+      situado
+    };
+  }
+
+  return { tipo: 'OFF', vuelos: [] };
+}
+
+function extractFlights(text) {
+  const flights = [];
+  // Pattern: flight number like 6012, 6014, 6015, 6017, 6072, 6073, 6074, 6075
+  const flightPattern = /(\d{2}:\d{2})\s*(6\d{3})\s*(\d{2}:\d{2})\s*\*?(MAD|LPA|TFN)\s*(LPA|TFN|MAD)\s*(\d{2}:\d{2})/g;
+  let m;
+  while ((m = flightPattern.exec(text)) !== null) {
+    flights.push({
+      presentacion: m[1],
+      numero: m[2],
+      salida: m[3],
+      origen: m[4],
+      destino: m[5],
+      llegada: m[6],
+      avion: 'E2B',
+      situado: text.includes('*' + m[4]) || text.includes('*' + m[5])
+    });
+  }
+  // Simpler fallback: just find flight numbers
+  if (flights.length === 0) {
+    const simpleFlights = [...text.matchAll(/(6\d{3})/g)];
+    const times = text.match(/(\d{2}:\d{2})/g) || [];
+    const routes = text.match(/(MAD|LPA|TFN)/g) || [];
+    simpleFlights.forEach((sf, i) => {
+      flights.push({
+        numero: sf[1],
+        salida: times[i*2] || null,
+        llegada: times[i*2+1] || null,
+        origen: routes[i*2] || '?',
+        destino: routes[i*2+1] || '?',
+        avion: 'E2B',
+        situado: false,
+      });
+    });
+  }
+  return flights;
+}
+
+function extractFinJornada(text) {
+  // Last time in format HH:MM or {IBB}\n HH:MM
+  const times = text.match(/(\d{2}:\d{2})/g) || [];
+  return times[times.length - 1] || null;
+}
+
+// ── CAMBIOS ──
+function renderCambios() {
+  // Load from Firebase
+  get(ref(db, 'cambios')).then(snap => {
+    const cambios = snap.exists() ? snap.val() : {};
+    const mis = Object.entries(cambios).filter(([,c]) =>
+      c.solicitante_id === currentUser.uid || c.receptor_id === currentUser.uid
+    );
+
+    const el = document.getElementById('mis-cambios');
+    if (!mis.length) {
+      el.innerHTML = `<div style="color:var(--ghost);font-size:12px;text-align:center;padding:20px">No hay solicitudes activas</div>`;
+      return;
+    }
+
+    el.innerHTML = mis.map(([id, c]) => {
+      const esSolicitante = c.solicitante_id === currentUser.uid;
+      const otro = allUsers[esSolicitante ? c.receptor_id : c.solicitante_id];
+      const statusMap = { pendiente: 'status-pending', aceptado: 'status-accepted', rechazado: 'status-rejected' };
+      return `<div class="change-card">
+        <span class="change-status ${statusMap[c.estado] || 'status-pending'}">${c.estado}</span>
+        <div class="change-days">
+          <div class="change-day-box">
+            <div class="change-day-date">${c.dia_solicitante?.slice(8)}</div>
+            <div class="change-day-type">${c.turno_solicitante || '—'}</div>
+          </div>
+          <div class="change-arrow">⇄</div>
+          <div class="change-day-box">
+            <div class="change-day-date">${c.dia_receptor?.slice(8)}</div>
+            <div class="change-day-type">${c.turno_receptor || '—'}</div>
+          </div>
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--ghost)">
+          ${esSolicitante ? '→ Enviado a' : '← Recibido de'} ${otro?.nombre || '—'}
+        </div>
+        ${c.estado === 'pendiente' && !esSolicitante ? `
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn-jade" style="margin:0;flex:1" onclick="responderCambio('${id}','aceptado')">Aceptar</button>
+            <button class="btn-red" style="margin:0;flex:1" onclick="responderCambio('${id}','rechazado')">Rechazar</button>
+          </div>` : ''}
+        ${c.estado === 'aceptado' ? `<button class="btn-sky" style="margin-top:8px" onclick="generarSolicitudOps('${id}')">📋 Generar solicitud a Ops</button>` : ''}
+      </div>`;
+    }).join('');
+  });
+}
+
+window.propCambioFromDay = (dateStr) => {
+  closeDayModal();
+  showTab('cambios');
+  showProponerCambio(dateStr);
+};
+
+window.showProponerCambio = (myDate = null) => {
+  const myDates = Object.entries(myRoster)
+    .filter(([,d]) => d.tipo === 'M' || d.tipo === 'T')
+    .sort((a,b) => a[0].localeCompare(b[0]));
+
+  const options = myDates.map(([date, day]) =>
+    `<option value="${date}" ${date === myDate ? 'selected' : ''}>
+      ${date.slice(8)}/${date.slice(5,7)} — ${day.tipo === 'M' ? 'Mañana' : 'Tarde'}
+    </option>`
+  ).join('');
+
+  const modalContent = `
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeDayModal()">✕</button>
+    <div style="font-family:var(--head);font-size:18px;font-weight:700;margin-bottom:16px;color:var(--fog)">
+      Proponer cambio
+    </div>
+    <div class="field-group">
+      <label class="field-label">Tu día a cambiar</label>
+      <select class="field-input" id="prop-mi-dia">${options}</select>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Piloto</label>
+      <select class="field-input" id="prop-piloto">
+        ${Object.entries(allUsers)
+          .filter(([uid, u]) => uid !== currentUser.uid && u.base === 'MAD' && u.funcion === (userProfile?.funcion))
+          .map(([uid, u]) => `<option value="${uid}">${u.nombre} (${u.codigo})</option>`)
+          .join('')}
+      </select>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Su día que solicitas</label>
+      <select class="field-input" id="prop-su-dia">
+        <option value="">— Selecciona primero un piloto —</option>
+      </select>
+    </div>
+    <div id="prop-validacion" style="margin-bottom:8px"></div>
+    <button class="btn-sky" onclick="enviarCambio()">Enviar propuesta</button>
+  `;
+
+  document.getElementById('day-modal-content').innerHTML = modalContent;
+  document.getElementById('day-modal').classList.add('open');
+
+  document.getElementById('prop-piloto').addEventListener('change', updateSusDias);
+  updateSusDias();
+};
+
+function updateSusDias() {
+  const uid = document.getElementById('prop-piloto')?.value;
+  const sel = document.getElementById('prop-su-dia');
+  if (!uid || !sel) return;
+  const theirRoster = allRosters[uid] || {};
+  const options = Object.entries(theirRoster)
+    .filter(([,d]) => d.tipo === 'M' || d.tipo === 'T')
+    .sort((a,b) => a[0].localeCompare(b[0]))
+    .map(([date, day]) =>
+      `<option value="${date}">${date.slice(8)}/${date.slice(5,7)} — ${day.tipo === 'M' ? 'Mañana' : 'Tarde'}</option>`
+    ).join('');
+  sel.innerHTML = options || '<option>Sin días disponibles</option>';
+  validateCambio();
+}
+
+function validateCambio() {
+  const el = document.getElementById('prop-validacion');
+  if (!el) return;
+  const miDia = document.getElementById('prop-mi-dia')?.value;
+  const suDia = document.getElementById('prop-su-dia')?.value;
+  const uid   = document.getElementById('prop-piloto')?.value;
+  if (!miDia || !suDia || !uid) return;
+
+  const miDay  = myRoster[miDia];
+  const suDay  = allRosters[uid]?.[suDia];
+  if (!miDay || !suDay) return;
+
+  // Validate rest rule: if swapping to M, check day before
+  let valid = true; let msg = '';
+
+  // Check: if I receive their tarde and day before I have tarde
+  if (suDay.tipo === 'M') {
+    const prevDate = getPrevDate(suDia);
+    const myPrev = myRoster[prevDate];
+    if (myPrev?.tipo === 'T') {
+      const prevEnd = myPrev.fin_jornada || '23:59';
+      const prevEndH = parseInt(prevEnd.slice(0,2));
+      if (prevEndH >= 18) { valid = false; msg = '⚠️ Conflicto descanso: terminas tarde el día anterior'; }
+    }
+  }
+  if (miDay.tipo === 'M') {
+    const prevDate = getPrevDate(miDia);
+    const theirPrev = allRosters[uid]?.[prevDate];
+    if (theirPrev?.tipo === 'T') {
+      const prevEnd = theirPrev.fin_jornada || '23:59';
+      const prevEndH = parseInt(prevEnd.slice(0,2));
+      if (prevEndH >= 18) { valid = false; msg = '⚠️ El compañero termina tarde el día anterior a tu turno'; }
+    }
+  }
+
+  el.innerHTML = valid
+    ? `<div class="alert success"><div class="alert-icon">✅</div><div class="alert-content"><div class="alert-title">Cambio válido</div><div class="alert-text">Cumple los requisitos de descanso.</div></div></div>`
+    : `<div class="alert warning"><div class="alert-icon">⚠️</div><div class="alert-content"><div class="alert-title">Cambio no válido</div><div class="alert-text">${msg}</div></div></div>`;
+}
+
+window.enviarCambio = async () => {
+  const miDia = document.getElementById('prop-mi-dia').value;
+  const suDia = document.getElementById('prop-su-dia').value;
+  const uid   = document.getElementById('prop-piloto').value;
+  if (!miDia || !suDia || !uid) return;
+
+  const miDay = myRoster[miDia];
+  const suDay = allRosters[uid]?.[suDia];
+
+  try {
+    await push(ref(db, 'cambios'), {
+      solicitante_id: currentUser.uid,
+      receptor_id: uid,
+      dia_solicitante: miDia,
+      dia_receptor: suDia,
+      turno_solicitante: miDay?.tipo || '?',
+      turno_receptor: suDay?.tipo || '?',
+      estado: 'pendiente',
+      createdAt: new Date().toISOString()
+    });
+    closeDayModal();
+    renderCambios();
+  } catch(e) {
+    alert('Error al enviar: ' + e.message);
+  }
+};
+
+window.responderCambio = async (id, estado) => {
+  await update(ref(db, `cambios/${id}`), { estado, updatedAt: new Date().toISOString() });
+  renderCambios();
+};
+
+window.generarSolicitudOps = (id) => {
+  get(ref(db, `cambios/${id}`)).then(snap => {
+    const c = snap.val();
+    const sol = allUsers[c.solicitante_id];
+    const rec = allUsers[c.receptor_id];
+    const myFlights = myRoster[c.dia_solicitante]?.vuelos || [];
+    const theirFlights = allRosters[c.receptor_id]?.[c.dia_receptor]?.vuelos || [];
+
+    const texto = `SOLICITUD DE CAMBIO DE SERVICIO
+
+A la Dirección de Operaciones de Binter Canarias (BCSA)
+
+D. ${sol?.nombre || '—'} (${sol?.funcion} · ${sol?.codigo}) y
+D. ${rec?.nombre || '—'} (${rec?.funcion} · ${rec?.codigo})
+
+por mutuo acuerdo solicitan el siguiente cambio de servicio:
+
+• ${sol?.nombre} cede el día ${c.dia_solicitante} (turno ${c.turno_solicitante}${myFlights.length ? ', vuelos ' + myFlights.map(v=>v.numero).join('/') : ''})
+  recibiendo el día ${c.dia_receptor} (turno ${c.turno_receptor}${theirFlights.length ? ', vuelos ' + theirFlights.map(v=>v.numero).join('/') : ''})
+
+• ${rec?.nombre} cede el día ${c.dia_receptor} (turno ${c.turno_receptor})
+  recibiendo el día ${c.dia_solicitante} (turno ${c.turno_solicitante})
+
+Ambos tripulantes confirman que el cambio cumple con los requisitos de descanso establecidos en el Convenio Colectivo BCSA 2026.
+
+Fecha: ${new Date().toLocaleDateString('es-ES')}
+
+Firmado:
+${sol?.nombre} _______________
+${rec?.nombre} _______________`;
+
+    document.getElementById('day-modal-content').innerHTML = `
+      <div class="modal-handle"></div>
+      <button class="modal-close" onclick="closeDayModal()">✕</button>
+      <div style="font-family:var(--head);font-size:16px;font-weight:700;margin-bottom:12px;color:var(--fog)">
+        Solicitud para Operaciones
+      </div>
+      <div style="background:var(--ink3);border:1px solid var(--rim);border-radius:8px;padding:14px;
+        font-family:var(--mono);font-size:11px;color:var(--mist);line-height:1.7;
+        white-space:pre-wrap;margin-bottom:12px">${texto}</div>
+      <button class="btn-sky" onclick="copyToClipboard(\`${texto.replace(/`/g,"'")}\`)">📋 Copiar texto</button>
+    `;
+    document.getElementById('day-modal').classList.add('open');
+  });
+};
+
+window.copyToClipboard = (text) => {
+  navigator.clipboard.writeText(text).then(() => alert('✓ Copiado al portapapeles'));
+};
+
+// ── PERFIL ──
+function renderPerfil() {
+  if (!userProfile) return;
+  const p = userProfile;
+  const el = document.getElementById('perfil-content');
+  el.innerHTML = `
+    <div class="card" style="text-align:center;padding:24px;position:relative">
+      <div style="margin:0 auto 16px">${buildEpaulettes(p.funcion||'CMD', p.nivel||3, 100)}</div>
+      <div style="font-family:var(--head);font-size:20px;font-weight:700;color:var(--fog);margin-bottom:4px">${p.nombre || '—'}</div>
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--sky2);margin-bottom:16px">
+        ${p.funcion||''} · NIVEL ${p.nivel||'?'} · BASE MAD
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left">
+        <div style="background:var(--ink3);border-radius:8px;padding:10px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--ghost);letter-spacing:2px;margin-bottom:4px">CÓDIGO</div>
+          <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--fog)">${p.codigo||'—'}</div>
+        </div>
+        <div style="background:var(--ink3);border-radius:8px;padding:10px">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--ghost);letter-spacing:2px;margin-bottom:4px">ESTADO</div>
+          <div style="font-family:var(--mono);font-size:12px;color:${p.verificado ? 'var(--jade)' : 'var(--gold2)'}">
+            ${p.verificado ? '✓ Verificado' : '⏳ Pendiente'}
+          </div>
+        </div>
+      </div>
+    </div>
+    ${!p.verificado ? `<div class="alert warning">
+      <div class="alert-icon">⏳</div>
+      <div class="alert-content">
+        <div class="alert-title">Verificación pendiente</div>
+        <div class="alert-text">El administrador de la base debe verificar tu cuenta para acceder a todas las funciones.</div>
+      </div>
+    </div>` : ''}
+    <div class="card">
+      <div class="card-title"><div class="dot dot-sky"></div>Mi roster</div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--mist)">
+        Días cargados: <span style="color:var(--sky2)">${Object.keys(myRoster).length}</span>
+      </div>
+    </div>
+    <button class="btn-red" onclick="doLogout()">Cerrar sesión</button>
+  `;
+}
+
+// ── NOTIFICATIONS ──
+function checkNotifications() {
+  get(ref(db, 'cambios')).then(snap => {
+    if (!snap.exists()) return;
+    const pending = Object.values(snap.val()).filter(c =>
+      c.receptor_id === currentUser.uid && c.estado === 'pendiente'
+    ).length;
+    const badge = document.getElementById('notif-count');
+    badge.style.display = pending > 0 ? 'flex' : 'none';
+    badge.textContent = pending;
+  });
+}
+
+// ── PILOTPAY ──
+window.openPilotPay = () => {
+  window.open('https://erraba.github.io/pilotpay', '_blank');
+};
+
+// ── HELPERS ──
+function formatDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function getPrevDate(dateStr) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() - 1);
+  return formatDate(d);
+}
+
+// Enter key handlers
+document.getElementById('login-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') window.doLogin();
+});
+</script>
+</body>
+</html>
